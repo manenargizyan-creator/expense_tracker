@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:expense_tracker/screens/add_transaction_screen.dart';
 import '/widgets/weekly_chart.dart';
+import '/widgets/month_selector_header.dart';
 
 void main() {
   runApp(const ExpenseTrackerApp());
@@ -15,7 +17,7 @@ class ExpenseTrackerApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: const Color.fromARGB(255, 245, 255, 233),
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
           backgroundColor: Color.fromARGB(255, 39, 111, 41),
           foregroundColor: Colors.white,
           elevation: 0,
@@ -40,20 +42,47 @@ class HomeScreen extends StatelessWidget {
             bottomRight: Radius.circular(30),
           ),
         ),
+        flexibleSpace: const Padding(
+          padding: EdgeInsets.only(left: 24, right: 24, top: 75),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MonthSelectorHeader(),
+              SizedBox(height: 20),
+              Text(
+                'Մնացորդ ամսվա վերջում',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 width: double.infinity,
                 height: 200,
-                child: WeeklyChart(expenses: [3, 5, 6, 8, 5, 6, 4]),
+                child: WeeklyChart(
+                  expenses: [3.0, 5.0, 6.0, 8.0, 5.0, 6.0, 4.0],
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Row(
+                children: [
+                  Text(
+                    'Գործարքներ',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ],
               ),
               const Spacer(),
-
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -61,11 +90,7 @@ class HomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const Scaffold(
-                          body: SafeArea(
-                            child: Center(child: WeeklyChart(expenses: [])),
-                          ),
-                        ),
+                        builder: (context) => const AddTransactionScreen(),
                       ),
                     );
                   },
