@@ -16,7 +16,7 @@ class ExpenseTrackerApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color.fromARGB(255, 245, 255, 233),
+        scaffoldBackgroundColor: Color.fromARGB(255, 243, 246, 241),
         appBarTheme: const AppBarTheme(
           backgroundColor: Color.fromARGB(255, 39, 111, 41),
           foregroundColor: Colors.white,
