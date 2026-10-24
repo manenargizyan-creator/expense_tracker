@@ -1,6 +1,8 @@
+import 'package:expense_tracker/widgets/data_field.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-void main() => runApp(const AddTransactionScreen());
+void main() => runApp(AddTransactionScreen());
 
 class AddTransactionScreen extends StatefulWidget {
   const AddTransactionScreen({super.key});
@@ -11,33 +13,33 @@ class AddTransactionScreen extends StatefulWidget {
 
 class _AddTransactionScreenState extends State<AddTransactionScreen> {
   bool isExpense = true;
+  String selectedCategory = '';
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 243, 246, 241),
+        backgroundColor: Color.fromARGB(255, 243, 246, 241),
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 243, 246, 241),
+          backgroundColor: Color.fromARGB(255, 243, 246, 241),
           leading: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8),
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: const Color.fromARGB(255, 224, 223, 223),
-                ),
+                border: Border.all(color: Color.fromARGB(255, 224, 223, 223)),
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: IconButton(
-                icon: const Icon(Icons.close),
+                icon: Icon(Icons.close),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
             ),
           ),
-          title: const Text(
+          title: Text(
             'Նոր գործարք',
             style: TextStyle(
               color: Colors.black,
@@ -47,7 +49,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           ),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -55,7 +57,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 height: 50,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 216, 219, 221),
+                  color: Color.fromARGB(255, 216, 219, 221),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Row(
@@ -65,24 +67,23 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         onTap: () {
                           setState(() {
                             isExpense = true;
+                            selectedCategory = '';
                           });
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.all(3),
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: isExpense
-                                  ? Colors.white
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: const Text(
-                              'Ծախս',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                        child: Container(
+                          margin: EdgeInsets.all(3),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: isExpense
+                                ? Colors.white
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            'Ծախս',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -93,24 +94,23 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         onTap: () {
                           setState(() {
                             isExpense = false;
+                            selectedCategory = '';
                           });
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.all(3),
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: !isExpense
-                                  ? Colors.white
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: const Text(
-                              'Մուտք',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                        child: Container(
+                          margin: EdgeInsets.all(3),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: !isExpense
+                                ? Colors.white
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            'Մուտք',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -120,44 +120,191 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ),
               ),
               SizedBox(height: 20),
-              if (isExpense) ...[
-                Container(
-                  width: double.infinity,
-                  height: 200,
-                  alignment: Alignment.topLeft,
-                  child: Container(
-                    height: 160,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
+              Container(
+                width: double.infinity,
+                height: 160,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(height: 20),
+                    Text(
+                      'ԳՈՒՄԱՐ',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    child: Center(
-                      child: Text(
-                        'ԳՈՒՄԱՐ',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    SizedBox(height: 10),
+                    SizedBox(
+                      width: 160,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.center,
+                              decoration: InputDecoration(
+                                border: UnderlineInputBorder(),
+                              ),
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '֏',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 15),
+              Text(
+                'ԿԱՏԵԳՈՐԻԱ',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
+                ),
+              ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: categoryButton(
+                      title: isExpense ? 'Սնունդ' : 'Աշխատավարձ',
+                      icon: isExpense
+                          ? Icons.local_mall_outlined
+                          : Icons.payments,
+                      iconColor: Colors.grey,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: categoryButton(
+                      title: isExpense ? 'Տրանսպորտ' : 'Նվեր',
+                      icon: isExpense
+                          ? Icons.business_center_outlined
+                          : Icons.card_giftcard,
+                      iconColor: Colors.grey,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: categoryButton(
+                      title: isExpense ? 'Ուսում' : 'Բիզնես',
+                      icon: isExpense
+                          ? Icons.desktop_windows_outlined
+                          : Icons.business,
+                      iconColor: Colors.grey,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: categoryButton(
+                      title: 'Այլ',
+                      icon: Icons.more_horiz,
+                      iconColor: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 15),
+              Text(
+                "ՆՇՈՒՄ",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              SizedBox(
+                width: 400,
+                height: 50,
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(
+                        color: Colors.grey,
+                        width: 2,
                       ),
                     ),
                   ),
-                ),
-              ] else ...[
-                Container(
-                  width: double.infinity,
-                  height: 200,
-                  alignment: Alignment.topLeft,
-                  child: const Text(
-                    'ՄՈՒՏՔԻ ԷՋ',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ],
+              ),
+              SizedBox(height: 10),
+              DateField(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget categoryButton({
+    required String title,
+    required IconData icon,
+    required Color iconColor,
+  }) {
+    bool isSelected = selectedCategory == title;
+
+    return Column(
+      children: [
+        InkWell(
+          borderRadius: BorderRadius.circular(15),
+          onTap: () {
+            setState(() {
+              selectedCategory = title;
+            });
+          },
+          child: Container(
+            height: 60,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: isSelected ? Colors.green : Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                color: isSelected ? Colors.green : Colors.grey.shade300,
+              ),
+            ),
+            child: Icon(
+              icon,
+              size: 24,
+              color: isSelected ? Colors.white : iconColor,
+            ),
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 12,
+            color: isSelected ? Colors.black : Colors.grey,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

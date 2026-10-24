@@ -42,7 +42,7 @@ class HomeScreen extends StatelessWidget {
             bottomRight: Radius.circular(30),
           ),
         ),
-        flexibleSpace: const Padding(
+        flexibleSpace: Padding(
           padding: EdgeInsets.only(left: 24, right: 24, top: 75),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,6 +56,71 @@ class HomeScreen extends StatelessWidget {
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
+              ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 70,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Մուտք',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 150, 184, 112),
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            '',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      height: 70,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Ծախս',
+                            style: TextStyle(color: Colors.red, fontSize: 14),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            '',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -74,11 +139,40 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              const Row(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     'Գործարքներ',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddTransactionScreen(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 46, 109, 47),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Նոր գործարք',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -95,7 +189,7 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                   icon: const Icon(Icons.add, size: 24),
-                  label: const Text(
+                  label: Text(
                     'Նոր գործարք',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
