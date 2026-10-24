@@ -5,7 +5,6 @@ class StatisticsService {
     return transactions.where((transaction) => transaction.isExpense).toList();
   }
 
-  // Ծախսերի ընդհանուր գումարը
   double calculateTotalExpenses(List<TransactionModel> transactions) {
     return getExpenses(
       transactions,

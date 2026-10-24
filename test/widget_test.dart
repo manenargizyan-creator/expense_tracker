@@ -2,9 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:expense_tracker/main.dart';
 
 void main() {
-  testWidgets('Expense Tracker app loads', (WidgetTester tester) async {
-    await tester.pumpWidget(const ExpenseTrackerApp());
+  testWidgets('Finance app loads', (WidgetTester tester) async {
+    await tester.pumpWidget(const FinanceApp());
 
-    expect(find.text('Expense Tracker'), findsOneWidget);
+    expect(find.byType(FinanceApp), findsOneWidget);
   });
 }

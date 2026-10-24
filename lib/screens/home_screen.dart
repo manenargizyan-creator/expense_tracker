@@ -1,38 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/screens/add_transaction_screen.dart';
-import '/widgets/weekly_chart.dart';
-import '/widgets/month_selector_header.dart';
+import '../models/transaction_model.dart';
+import '../data/transaction_data.dart';
+import '../widgets/weekly_chart.dart';
+import '../widgets/month_selector_header.dart';
 
-void main() {
-  runApp(const ExpenseTrackerApp());
-}
-
-class ExpenseTrackerApp extends StatelessWidget {
-  const ExpenseTrackerApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: Color.fromARGB(255, 243, 246, 241),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color.fromARGB(255, 39, 111, 41),
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-      ),
-      home: const HomeScreen(),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  List<TransactionModel> transactions = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadTransactions();
+  }
+
+  Future<void> loadTransactions() async {
+    final data = await TransactionData.loadTransactions();
+    if (!mounted) return;
+
+    setState(() {
+      transactions = data;
+      isLoading = false;
+    });
+  }
+
+  Future<void> _openAddScreen() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
+    );
+    await loadTransactions();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+
+    final monthTransactions = transactions.where((transaction) {
+      return transaction.date.year == now.year &&
+          transaction.date.month == now.month;
+    }).toList();
+
+    final income = monthTransactions
+        .where((t) => t.isIncome)
+        .fold<double>(0, (sum, t) => sum + t.amount);
+
+    final expenses = monthTransactions
+        .where((t) => t.isExpense)
+        .fold<double>(0, (sum, t) => sum + t.amount);
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 210,
@@ -43,13 +67,13 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         flexibleSpace: Padding(
-          padding: EdgeInsets.only(left: 24, right: 24, top: 75),
+          padding: const EdgeInsets.only(left: 24, right: 24, top: 75),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               MonthSelectorHeader(),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 'Մնացորդ ամսվա վերջում',
                 style: TextStyle(
                   color: Colors.white,
@@ -57,69 +81,12 @@ class HomeScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 children: [
-                  Expanded(
-                    child: Container(
-                      height: 70,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Մուտք',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 150, 184, 112),
-                              fontSize: 14,
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            '',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Container(
-                      height: 70,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Ծախս',
-                            style: TextStyle(color: Colors.red, fontSize: 14),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            '',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  _balanceCard('Մուտք', income, const Color(0xFF96B870)),
+                  const SizedBox(width: 12),
+                  _balanceCard('Ծախս', expenses, Colors.red),
                 ],
               ),
             ],
@@ -134,9 +101,7 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 height: 200,
-                child: WeeklyChart(
-                  expenses: [3.0, 5.0, 6.0, 8.0, 5.0, 6.0, 4.0],
-                ),
+                child: WeeklyChart(expenses: [3, 5, 6, 8, 5, 6, 4]),
               ),
               const SizedBox(height: 10),
               Row(
@@ -146,55 +111,65 @@ class HomeScreen extends StatelessWidget {
                     'Գործարքներ',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AddTransactionScreen(),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 46, 109, 47),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'Նոր գործարք',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
+                  _addButton(),
                 ],
               ),
-              const Spacer(),
+              const SizedBox(height: 10),
+              Expanded(
+                child: isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : monthTransactions.isEmpty
+                    ? const Center(
+                        child: Text('Այս ամսվա գործարքներ դեռ չկան։'),
+                      )
+                    : ListView.builder(
+                        itemCount: monthTransactions.length,
+                        itemBuilder: (context, index) {
+                          final transaction = monthTransactions[index];
+
+                          return Card(
+                            child: ListTile(
+                              leading: Icon(
+                                transaction.isIncome
+                                    ? Icons.arrow_downward
+                                    : Icons.arrow_upward,
+                                color: transaction.isIncome
+                                    ? Colors.green
+                                    : Colors.red,
+                              ),
+                              title: Text(
+                                transaction.note.isEmpty
+                                    ? transaction.category.name
+                                    : transaction.note,
+                              ),
+                              subtitle: Text(
+                                '${transaction.date.day}.${transaction.date.month}.${transaction.date.year}',
+                              ),
+                              trailing: Text(
+                                '${transaction.isIncome ? '+' : '-'}${transaction.amount.toStringAsFixed(0)} ֏',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: transaction.isIncome
+                                      ? Colors.green
+                                      : Colors.red,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddTransactionScreen(),
-                      ),
-                    );
-                  },
+                  onPressed: _openAddScreen,
                   icon: const Icon(Icons.add, size: 24),
-                  label: Text(
+                  label: const Text(
                     'Նոր գործարք',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 46, 109, 47),
+                    backgroundColor: const Color(0xFF2E6D2F),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
@@ -210,6 +185,46 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _balanceCard(String title, double amount, Color titleColor) {
+    return Expanded(
+      child: Container(
+        height: 70,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: TextStyle(color: titleColor, fontSize: 14)),
+            const SizedBox(height: 5),
+            Text(
+              '${amount.toStringAsFixed(0)} ֏',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _addButton() {
+    return ElevatedButton(
+      onPressed: _openAddScreen,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF2E6D2F),
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      child: const Text('Նոր գործարք'),
     );
   }
 }

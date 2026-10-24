@@ -22,14 +22,16 @@ class TransactionModel {
   bool get isExpense => type == TransactionType.expense;
   bool get isIncome => type == TransactionType.income;
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'note': note,
-    'amount': amount,
-    'type': type.name,
-    'category': category.name,
-    'date': date.toIso8601String(),
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'note': note,
+      'amount': amount,
+      'type': type.name,
+      'category': category.name,
+      'date': date.toIso8601String(),
+    };
+  }
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
     return TransactionModel(
