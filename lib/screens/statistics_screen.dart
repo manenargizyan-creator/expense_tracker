@@ -14,12 +14,12 @@ class StatisticsScreen extends StatefulWidget {
 class _StatisticsScreenState extends State<StatisticsScreen> {
   int selectedMonth = 0;
 
-  final Color bgColor = const Color.fromARGB(255, 243, 246, 241);
+  final Color bgColor = Color.fromARGB(255, 243, 246, 241);
 
   List<TransactionModel> transactions = [];
   bool isLoading = true;
 
-  final List<String> months = const [
+  final List<String> months = [
     'Հունվար',
     'Փետրվար',
     'Մարտ',
@@ -61,17 +61,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     }
   }
 
-
   DateTime get displayedMonth {
     final now = DateTime.now();
     return DateTime(now.year, now.month - selectedMonth);
   }
 
-
   String get currentMonthTitle {
     return months[DateTime.now().month - 1];
   }
-
 
   String get previousMonthTitle {
     final now = DateTime.now();
@@ -79,13 +76,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     return months[previous.month - 1];
   }
 
-
   DateTime get comparisonMonth {
     return DateTime(displayedMonth.year, displayedMonth.month - 1);
   }
 
-
-  double categoryTotalForMonth(TransactionCategory category, DateTime month) {
+  double categoryTotalForMonth(
+    TransactionCategory category,
+    DateTime month,
+  ) {
     return transactions
         .where(
           (transaction) =>
@@ -97,8 +95,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         .fold<double>(0, (sum, transaction) => sum + transaction.amount);
   }
 
-  
-  int categoryCountForMonth(TransactionCategory category, DateTime month) {
+  int categoryCountForMonth(
+    TransactionCategory category,
+    DateTime month,
+  ) {
     return transactions
         .where(
           (transaction) =>
@@ -109,29 +109,29 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         )
         .length;
   }
+
   double categoryTotal(TransactionCategory category) {
     return categoryTotalForMonth(category, displayedMonth);
   }
 
+  List<TransactionCategory> get activeCategories {
+    final List<TransactionCategory> activeList = [];
 
-  Map<TransactionCategory, double> get categoryTotals {
-    final Map<TransactionCategory, double> totals = {};
-
-    for (final transaction in transactions) {
-      if (transaction.isExpense &&
-          transaction.date.month == displayedMonth.month &&
-          transaction.date.year == displayedMonth.year) {
-        totals[transaction.category] =
-            (totals[transaction.category] ?? 0) + transaction.amount;
+    for (final category in TransactionCategory.values) {
+      if (categoryTotal(category) > 0) {
+        activeList.add(category);
       }
     }
 
-    return totals;
+    return activeList;
   }
 
- 
   double get monthlyTotal {
-    return categoryTotals.values.fold<double>(0, (sum, amount) => sum + amount);
+    double total = 0;
+    for (final category in TransactionCategory.values) {
+      total += categoryTotal(category);
+    }
+    return total;
   }
 
   Widget _typeButton(String title, int index) {
@@ -146,7 +146,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           });
         },
         child: Container(
-          margin: const EdgeInsets.all(3),
+          margin: EdgeInsets.all(3),
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: isSelected ? Colors.white : Colors.transparent,
@@ -166,7 +166,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-
   String categoryTitle(TransactionCategory category) {
     switch (category) {
       case TransactionCategory.food:
@@ -179,7 +178,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         return 'Այլ';
     }
   }
-
 
   String? categoryIcon(TransactionCategory category) {
     switch (category) {
@@ -194,7 +192,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     }
   }
 
-  
   Color categoryColor(TransactionCategory category) {
     switch (category) {
       case TransactionCategory.food:
@@ -207,6 +204,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         return Colors.deepPurpleAccent;
     }
   }
+
   Widget _insightBannerCard() {
     final double foodAmount = categoryTotalForMonth(
       TransactionCategory.food,
@@ -223,32 +221,32 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(top: 10),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E382B),
+        color: Color(0xFF1E382B),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.trending_up,
               color: Color(0xFF4E9F74),
               size: 24,
             ),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: 14),
           Expanded(
             child: Text(
               'Սննդի ծախսը աճել է՝ օրական միջինը $formattedDaily ֏',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -260,7 +258,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       ),
     );
   }
-
 
   Widget _categoryItem(TransactionCategory category, double amount) {
     final color = categoryColor(category);
@@ -278,8 +275,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final Color changeColor = increased
         ? Colors.red
         : decreased
-        ? Colors.green
-        : Colors.grey;
+            ? Colors.green
+            : Colors.grey;
 
     final String changeText = isEqual
         ? '= նույնը'
@@ -292,8 +289,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         : 0.0;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -316,27 +313,29 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         categoryIcon(category)!,
                         width: 25,
                         height: 25,
-                        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                        colorFilter: ColorFilter.mode(
+                          color,
+                          BlendMode.srcIn,
+                        ),
                       ),
               ),
-              const SizedBox(width: 12),
-
+              SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       categoryTitle(category),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Text(
                       '$txCount գործարք',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey,
                         fontWeight: FontWeight.w500,
@@ -345,23 +344,23 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   ],
                 ),
               ),
-
-              const SizedBox(width: 8),
-
+              SizedBox(width: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     '${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]} ')} ֏',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2),
                   Text(
-                    previousAmount == 0 && amount > 0 ? '+100% ↑' : changeText,
+                    previousAmount == 0 && amount > 0
+                        ? '+100% ↑'
+                        : changeText,
                     style: TextStyle(
                       fontSize: 12,
                       color: previousAmount == 0 && amount > 0
@@ -374,15 +373,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               ),
             ],
           ),
-
-          const SizedBox(height: 14),
-
+          SizedBox(height: 14),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 8,
-              backgroundColor: const Color(0xFFE9EDE8),
+              backgroundColor: Color(0xFFE9EDE8),
               valueColor: AlwaysStoppedAnimation<Color>(color),
             ),
           ),
@@ -393,7 +390,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final totals = categoryTotals;
+    final activeCategoryList = activeCategories;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -401,17 +398,17 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         backgroundColor: bgColor,
         elevation: 0,
         leading: Padding(
-          padding: const EdgeInsets.all(8),
+          padding: EdgeInsets.all(8),
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(
-                color: const Color.fromARGB(255, 224, 223, 223),
+                color: Color.fromARGB(255, 224, 223, 223),
               ),
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back_ios_new,
                 color: Colors.black,
                 size: 18,
@@ -420,7 +417,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             ),
           ),
         ),
-        title: const Text(
+        title: Text(
           'Կատեգորիաներ',
           style: TextStyle(
             color: Colors.black,
@@ -429,19 +426,18 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           ),
         ),
       ),
-       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Ընթացիկ և նախորդ ամիսների ընտրություն
                   Container(
                     height: 50,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 216, 219, 221),
+                      color: Color.fromARGB(255, 216, 219, 221),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Row(
@@ -451,48 +447,45 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       ],
                     ),
                   ),
-
-                  const SizedBox(height: 20),
-
-               
+                  SizedBox(height: 20),
                   CategoryChart(
                     food: categoryTotal(TransactionCategory.food),
                     transport: categoryTotal(TransactionCategory.transport),
                     study: categoryTotal(TransactionCategory.education),
                     other: categoryTotal(TransactionCategory.other),
                   ),
-
-                  const SizedBox(height: 20),
-
-                  const Text(
+                  SizedBox(height: 20),
+                  Text(
                     'Մանրամասն',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
                   ),
-
-                  const SizedBox(height: 12),
-
-                  
-                  if (totals.isEmpty)
+                  SizedBox(height: 12),
+                  if (activeCategoryList.isEmpty)
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(20),
+                      padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Այս ամսվա համար ծախսեր չկան',
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey, fontSize: 15),
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 15,
+                        ),
                       ),
                     )
                   else
-                    ...totals.entries.map(
-                      (entry) => _categoryItem(entry.key, entry.value),
+                    ...activeCategoryList.map(
+                      (category) =>
+                          _categoryItem(category, categoryTotal(category)),
                     ),
-
-                 
-                  if (totals.isNotEmpty) _insightBannerCard(),
+                  if (activeCategoryList.isNotEmpty) _insightBannerCard(),
                 ],
               ),
             ),
