@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../models/transaction_model.dart';
 import '../data/transaction_data.dart';
 import 'package:expense_tracker/widgets/data_field.dart';
@@ -14,7 +13,6 @@ class AddTransactionScreen extends StatefulWidget {
 class _AddTransactionScreenState extends State<AddTransactionScreen> {
   bool isExpense = true;
   String selectedCategory = '';
-  DateTime selectedDate = DateTime.now();
 
   final amountController = TextEditingController();
   final noteController = TextEditingController();
@@ -54,7 +52,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       amount: amount,
       type: isExpense ? TransactionType.expense : TransactionType.income,
       category: category,
-      date: selectedDate,
+      date: DateTime.now(),
     );
 
     try {
@@ -66,7 +64,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       Navigator.pop(context, true);
     } catch (e) {
       if (!mounted) return;
-
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Գործարքը պահպանել չհաջողվեց։')),
       );
@@ -90,7 +87,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: IconButton(
-              icon: const Icon(Icons.close, color: Colors.black),
+              icon: const Icon(Icons.close),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -190,71 +187,20 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               children: [
                 _categoryItem(
                   isExpense ? 'Սնունդ' : 'Աշխատավարձ',
-                  isExpense
-                      ? SvgPicture.asset(
-                          'assets/icons/shop_bag.svg',
-                          width: 32,
-                          height: 32,
-                          colorFilter: ColorFilter.mode(
-                            selectedCategory == 'Սնունդ'
-                                ? Colors.white
-                                : Colors.grey,
-                            BlendMode.srcIn,
-                          ),
-                        )
-                      : Icon(
-                          Icons.payments,
-                          color: selectedCategory == 'Աշխատավարձ'
-                              ? Colors.white
-                              : Colors.grey,
-                          size: 32,
-                        ),
+                  isExpense ? Icons.local_mall_outlined : Icons.payments,
                 ),
                 const SizedBox(width: 8),
                 _categoryItem(
                   isExpense ? 'Տրանսպորտ' : 'Նվեր',
-                  isExpense
-                      ? SvgPicture.asset(
-                          'assets/icons/bus.svg',
-                          width: 32,
-                          height: 32,
-                          colorFilter: ColorFilter.mode(
-                            selectedCategory == 'Տրանսպորտ'
-                                ? Colors.white
-                                : Colors.grey,
-                            BlendMode.srcIn,
-                          ),
-                        )
-                      : Icon(
-                          Icons.card_giftcard,
-                          color: selectedCategory == 'Նվեր'
-                              ? Colors.white
-                              : Colors.grey,
-                          size: 32,
-                        ),
+                  isExpense ? Icons.directions_bus : Icons.card_giftcard,
                 ),
                 const SizedBox(width: 8),
                 _categoryItem(
                   isExpense ? 'Ուսում' : 'Բիզնես',
-                  Icon(
-                    isExpense ? Icons.school_outlined : Icons.business,
-                    color: selectedCategory == (isExpense ? 'Ուսում' : 'Բիզնես')
-                        ? Colors.white
-                        : Colors.grey,
-                    size: 32,
-                  ),
+                  isExpense ? Icons.school_outlined : Icons.business,
                 ),
                 const SizedBox(width: 8),
-                _categoryItem(
-                  'Այլ',
-                  Icon(
-                    Icons.more_horiz,
-                    color: selectedCategory == 'Այլ'
-                        ? Colors.white
-                        : Colors.grey,
-                    size: 32,
-                  ),
-                ),
+                _categoryItem('Այլ', Icons.more_horiz),
               ],
             ),
             const SizedBox(height: 15),
@@ -278,14 +224,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               ),
             ),
             const SizedBox(height: 15),
-            DateField(
-              initialDate: selectedDate,
-              onDateChanged: (date) {
-                setState(() {
-                  selectedDate = date;
-                });
-              },
-            ),
+            const DateField(),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
@@ -338,7 +277,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  Widget _categoryItem(String title, Widget icon) {
+  Widget _categoryItem(String title, IconData icon) {
     final selected = selectedCategory == title;
 
     return Expanded(
@@ -354,7 +293,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             child: Container(
               height: 60,
               width: double.infinity,
-              alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: selected ? Colors.green : Colors.white,
                 borderRadius: BorderRadius.circular(15),
@@ -362,10 +300,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   color: selected ? Colors.green : Colors.grey.shade300,
                 ),
               ),
-              child: SizedBox(
-                width: 32,
-                height: 32,
-                child: Center(child: icon),
+              child: Icon(
+                icon,
+                size: 24,
+                color: selected ? Colors.white : Colors.grey,
               ),
             ),
           ),
