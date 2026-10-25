@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 
 class MonthSelectorHeader extends StatefulWidget {
-  const MonthSelectorHeader({super.key});
+  final int selectedMonth;
+  final ValueChanged<int> onMonthChanged;
+
+  const MonthSelectorHeader({
+    super.key,
+    required this.selectedMonth,
+    required this.onMonthChanged,
+  });
 
   @override
   State<MonthSelectorHeader> createState() => _MonthSelectorHeaderState();
 }
 
 class _MonthSelectorHeaderState extends State<MonthSelectorHeader> {
-  String selectedMonth = 'ՀՈԿՏԵՄԲԵՐ';
-
   final List<String> months = [
     'ՀՈՒՆՎԱՐ',
     'ՓԵՏՐՎԱՐ',
@@ -52,7 +57,7 @@ class _MonthSelectorHeaderState extends State<MonthSelectorHeader> {
                   itemCount: months.length,
                   itemBuilder: (context, index) {
                     final month = months[index];
-                    final isSelected = month == selectedMonth;
+                    final isSelected = index + 1 == widget.selectedMonth;
 
                     return ListTile(
                       title: Text(
@@ -72,10 +77,7 @@ class _MonthSelectorHeaderState extends State<MonthSelectorHeader> {
                           ? const Icon(Icons.check, color: Color(0xFF1B4D3E))
                           : null,
                       onTap: () {
-                        setState(() {
-                          selectedMonth = month;
-                        });
-
+                        widget.onMonthChanged(index + 1);
                         Navigator.pop(sheetContext);
                       },
                     );
@@ -93,28 +95,20 @@ class _MonthSelectorHeaderState extends State<MonthSelectorHeader> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _showMonthPicker,
-      child: Container(
-        color: Colors.transparent,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              selectedMonth,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.2,
-              ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            months[widget.selectedMonth - 1],
+            style: const TextStyle(
+              color: Colors.lightGreen,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
             ),
-            const SizedBox(width: 6),
-            const Icon(
-              Icons.keyboard_arrow_down,
-              color: Colors.white,
-              size: 22,
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 6),
+        ],
       ),
     );
   }

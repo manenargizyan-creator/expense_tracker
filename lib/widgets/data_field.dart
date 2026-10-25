@@ -2,28 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DateField extends StatefulWidget {
-  const DateField({super.key});
+  final DateTime initialDate;
+  final ValueChanged<DateTime> onDateChanged;
+
+  const DateField({
+    super.key,
+    required this.initialDate,
+    required this.onDateChanged,
+  });
+
   @override
   State<DateField> createState() => _DateFieldState();
 }
 
 class _DateFieldState extends State<DateField> {
-  final TextEditingController controller = TextEditingController();
+  late DateTime selectedDate;
+  late final TextEditingController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = widget.initialDate;
+    controller = TextEditingController(
+      text: DateFormat('dd.MM.yyyy').format(selectedDate),
+    );
+  }
+
   Future<void> selectDate() async {
     final date = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2030),
     );
 
-    if (!mounted) return;
+    if (!mounted || date == null) return;
 
-    if (date != null) {
-      setState(() {
-        controller.text = DateFormat('dd MMM yyyy ', 'hy').format(date);
-      });
-    }
+    setState(() {
+      selectedDate = date;
+      controller.text = DateFormat('dd.MM.yyyy').format(date);
+    });
+
+    widget.onDateChanged(date);
   }
 
   @override
@@ -35,10 +55,11 @@ class _DateFieldState extends State<DateField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      keyboardType: TextInputType.number,
-      textAlign: TextAlign.start,
+      controller: controller,
+      readOnly: true,
+      onTap: selectDate,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.calendar_month),
+        prefixIcon: const Icon(Icons.calendar_month),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: Colors.grey),

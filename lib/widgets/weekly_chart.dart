@@ -9,10 +9,21 @@ class WeeklyChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now();
+    final dates = List.generate(
+      7,
+      (index) => DateTime(
+        today.year,
+        today.month,
+        today.day,
+      ).subtract(Duration(days: 6 - index)),
+    );
 
-    final average = expenses.isEmpty
-        ? 0.0
-        : expenses.fold<double>(0, (sum, value) => sum + value) / 7;
+    final values = List.generate(
+      7,
+      (index) => expenses.length > index ? expenses[index] : 0.0,
+    );
+
+    final average = values.fold<double>(0, (sum, value) => sum + value) / 7;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -42,20 +53,16 @@ class WeeklyChart extends StatelessWidget {
             child: BarChart(
               BarChartData(
                 minY: 0,
-                maxY: _maxY(),
+                maxY: _maxY(values),
                 alignment: BarChartAlignment.spaceAround,
                 barGroups: List.generate(7, (index) {
-                  final expense = expenses.length > index
-                      ? expenses[index]
-                      : 0.0;
-
                   return BarChartGroupData(
                     x: index,
                     barRods: [
                       BarChartRodData(
-                        toY: expense,
+                        toY: values[index],
                         width: 21,
-                        color: index == 3
+                        color: index == 6
                             ? const Color(0xFF2D8059)
                             : const Color(0xFFC4DECF),
                         borderRadius: BorderRadius.circular(5),
@@ -84,22 +91,20 @@ class WeeklyChart extends StatelessWidget {
                           return const SizedBox.shrink();
                         }
 
-                        final date = today.subtract(Duration(days: 6 - index));
-
                         const days = [
-                          'Շբթ',
-                          'Կիր',
                           'Երկ',
                           'Երք',
                           'Չրք',
                           'Հնգ',
                           'Ուրբ',
+                          'Շբթ',
+                          'Կիր',
                         ];
 
                         return Padding(
                           padding: const EdgeInsets.only(top: 6),
                           child: Text(
-                            days[date.weekday - 1],
+                            days[dates[index].weekday - 1],
                             style: const TextStyle(
                               fontSize: 9,
                               color: Color(0xFF789083),
@@ -121,8 +126,8 @@ class WeeklyChart extends StatelessWidget {
     );
   }
 
-  double _maxY() {
-    final maxExpense = expenses.fold<double>(
+  double _maxY(List<double> values) {
+    final maxExpense = values.fold<double>(
       0,
       (max, value) => value > max ? value : max,
     );
