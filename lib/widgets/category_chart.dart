@@ -17,28 +17,101 @@ class CategoryChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final total = food + transport + study + other;
+    final double total = food + transport + study + other;
 
     if (total <= 0) {
-      return const SizedBox(
-        height: 220,
-        child: Center(child: Text('Ծախսեր դեռ չկան')),
+      return Container(
+        width: double.infinity,
+        height: 200,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: const Text(
+          'Ծախսեր դեռ չկան',
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
       );
     }
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 5,
+                child: SizedBox(
+                  height: 190,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      PieChart(
+                        PieChartData(
+                          centerSpaceRadius: 42,
+                          sectionsSpace: 3,
+                          sections: [
+                            if (food > 0) _section(food, total, Colors.orange),
+                            if (transport > 0)
+                              _section(transport, total, Colors.blue),
+                            if (study > 0)
+                              _section(study, total, Colors.purple),
+                            if (other > 0) _section(other, total, Colors.green),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          FittedBox(
+                            child: Text(
+                              '${total.toStringAsFixed(0)} ֏',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          const Text(
+                            'Ընդհանուր',
+                            style: TextStyle(fontSize: 10, color: Colors.grey),
+                          ),
+                          const SizedBox(height: 3),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
-    return SizedBox(
-      height: 220,
-      child: PieChart(
-        PieChartData(
-          centerSpaceRadius: 55,
-          sectionsSpace: 3,
-          sections: [
-            if (food > 0) _section(food, total, Colors.orange),
-            if (transport > 0) _section(transport, total, Colors.blue),
-            if (study > 0) _section(study, total, Colors.purple),
-            if (other > 0) _section(other, total, Colors.green),
-          ],
-        ),
+              const SizedBox(width: 5),
+              Expanded(
+                flex: 4,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _legend('Սնունդ', Colors.orange, food, total),
+                    const SizedBox(height: 16),
+                    _legend('Տրանսպորտ', Colors.blue, transport, total),
+                    const SizedBox(height: 16),
+                    _legend('Ուսում', Colors.purple, study, total),
+                    const SizedBox(height: 16),
+                    _legend('Այլ', Colors.green, other, total),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -47,13 +120,56 @@ class CategoryChart extends StatelessWidget {
     return PieChartSectionData(
       value: amount,
       color: color,
-      radius: 45,
+      radius: 35,
       title: '${(amount / total * 100).round()}%',
       titleStyle: const TextStyle(
         color: Colors.white,
         fontWeight: FontWeight.bold,
-        fontSize: 12,
+        fontSize: 10,
       ),
+    );
+  }
+
+  Widget _legend(String title, Color color, double amount, double total) {
+    final double percent = amount / total * 100;
+
+    return Row(
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+
+        const SizedBox(width: 7),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    title,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 12, color: Colors.black87),
+                  ),
+                  const SizedBox(height: 3),
+                  SizedBox(width: 10),
+                  Text(
+                    '${percent.toStringAsFixed(0)}%',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

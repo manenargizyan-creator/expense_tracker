@@ -24,7 +24,7 @@ class _DateFieldState extends State<DateField> {
     super.initState();
     selectedDate = widget.initialDate;
     controller = TextEditingController(
-      text: DateFormat('dd.MM.yyyy').format(selectedDate),
+      text: DateFormat('dd MMM yyyy').format(selectedDate),
     );
   }
 
@@ -40,7 +40,7 @@ class _DateFieldState extends State<DateField> {
 
     setState(() {
       selectedDate = date;
-      controller.text = DateFormat('dd.MM.yyyy').format(date);
+      controller.text = DateFormat('dd MMM yyyy', 'hy').format(date);
     });
 
     widget.onDateChanged(date);

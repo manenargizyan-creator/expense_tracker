@@ -236,19 +236,31 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 const SizedBox(width: 8),
                 _categoryItem(
                   isExpense ? 'Ուսում' : 'Բիզնես',
-                  Icon(
-                    isExpense ? Icons.school_outlined : Icons.business,
-                    color: selectedCategory == (isExpense ? 'Ուսում' : 'Բիզնես')
-                        ? Colors.white
-                        : Colors.grey,
-                    size: 32,
-                  ),
+                  isExpense
+                      ? SvgPicture.asset(
+                          'assets/icons/comp.svg',
+                          width: 32,
+                          height: 32,
+                          colorFilter: ColorFilter.mode(
+                            selectedCategory == 'Ուսում'
+                                ? Colors.white
+                                : Colors.grey,
+                            BlendMode.srcIn,
+                          ),
+                        )
+                      : Icon(
+                          Icons.business_sharp,
+                          color: selectedCategory == 'Բիզնես'
+                              ? Colors.white
+                              : Colors.grey,
+                          size: 32,
+                        ),
                 ),
                 const SizedBox(width: 8),
                 _categoryItem(
                   'Այլ',
                   Icon(
-                    Icons.more_horiz,
+                    Icons.add,
                     color: selectedCategory == 'Այլ'
                         ? Colors.white
                         : Colors.grey,

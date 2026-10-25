@@ -202,13 +202,64 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           return Card(
                             child: ListTile(
-                              leading: Icon(
-                                transaction.isIncome
-                                    ? Icons.arrow_downward
-                                    : Icons.arrow_upward,
-                                color: transaction.isIncome
-                                    ? Colors.green
-                                    : Colors.red,
+                              leading: Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  color: transaction.isIncome
+                                      ? const Color(0xFFE1F3D8)
+                                      : transaction.category ==
+                                            TransactionCategory.food
+                                      ? Color(0xFFFFE5D9)
+                                      : transaction.category ==
+                                            TransactionCategory.transport
+                                      ? const Color(0xFFDCEBFF)
+                                      : transaction.category ==
+                                            TransactionCategory.education
+                                      ? const Color(0xFFEDE0FF)
+                                      : const Color(0xFFFFF0C2),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child:
+                                    transaction.category ==
+                                        TransactionCategory.other
+                                    ? Icon(
+                                        Icons.add,
+                                        size: 25,
+                                        color: transaction.isIncome
+                                            ? const Color(0xFF388E3C)
+                                            : const Color(0xFFD6A020),
+                                      )
+                                    : transaction.isIncome
+                                    ? Icon(
+                                        transaction.note.toLowerCase().contains(
+                                              'աշխատավարձ',
+                                            )
+                                            ? Icons.payments
+                                            : transaction.note
+                                                  .toLowerCase()
+                                                  .contains('նվեր')
+                                            ? Icons.card_giftcard
+                                            : transaction.note
+                                                  .toLowerCase()
+                                                  .contains('բիզնես')
+                                            ? Icons.business
+                                            : Icons
+                                                  .account_balance_wallet_outlined,
+                                        size: 25,
+                                        color: const Color(0xFF388E3C),
+                                      )
+                                    : SvgPicture.asset(
+                                        transaction.category ==
+                                                TransactionCategory.food
+                                            ? 'assets/icons/shop_bag.svg'
+                                            : transaction.category ==
+                                                  TransactionCategory.transport
+                                            ? 'assets/icons/bus.svg'
+                                            : 'assets/icons/comp.svg',
+                                        width: 25,
+                                        height: 25,
+                                      ),
                               ),
                               title: Text(
                                 transaction.note.isEmpty
@@ -216,9 +267,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     : transaction.note,
                               ),
                               subtitle: Text(
+                                '${transaction.category.name} '
                                 '${transaction.date.day}.'
-                                '${transaction.date.month}.'
-                                '${transaction.date.year}',
+                                '${transaction.date.month}',
                               ),
                               trailing: Text(
                                 '${transaction.isIncome ? '+' : '-'}'
