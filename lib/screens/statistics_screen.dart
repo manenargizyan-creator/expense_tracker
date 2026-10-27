@@ -80,10 +80,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     return DateTime(displayedMonth.year, displayedMonth.month - 1);
   }
 
-  double categoryTotalForMonth(
-    TransactionCategory category,
-    DateTime month,
-  ) {
+  double categoryTotalForMonth(TransactionCategory category, DateTime month) {
     return transactions
         .where(
           (transaction) =>
@@ -95,10 +92,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         .fold<double>(0, (sum, transaction) => sum + transaction.amount);
   }
 
-  int categoryCountForMonth(
-    TransactionCategory category,
-    DateTime month,
-  ) {
+  int categoryCountForMonth(TransactionCategory category, DateTime month) {
     return transactions
         .where(
           (transaction) =>
@@ -176,6 +170,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         return 'Կրթություն';
       case TransactionCategory.other:
         return 'Այլ';
+      case TransactionCategory.salary:
+        return 'Աշխատավարձ';
+      case TransactionCategory.gift:
+        return 'Նվեր';
+      case TransactionCategory.business:
+        return 'Բիզնես';
     }
   }
 
@@ -188,6 +188,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       case TransactionCategory.education:
         return 'assets/icons/comp.svg';
       case TransactionCategory.other:
+      case TransactionCategory.salary:
+      case TransactionCategory.gift:
+      case TransactionCategory.business:
         return null;
     }
   }
@@ -201,6 +204,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       case TransactionCategory.education:
         return Colors.lightGreen;
       case TransactionCategory.other:
+        return Colors.deepPurpleAccent;
+      case TransactionCategory.business:
+        return Colors.lightGreen;
+      case TransactionCategory.salary:
+        return Colors.deepPurpleAccent;
+      case TransactionCategory.gift:
         return Colors.deepPurpleAccent;
     }
   }
@@ -236,11 +245,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              Icons.trending_up,
-              color: Color(0xFF4E9F74),
-              size: 24,
-            ),
+            child: Icon(Icons.trending_up, color: Color(0xFF4E9F74), size: 24),
           ),
           SizedBox(width: 14),
           Expanded(
@@ -275,8 +280,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final Color changeColor = increased
         ? Colors.red
         : decreased
-            ? Colors.green
-            : Colors.grey;
+        ? Colors.green
+        : Colors.grey;
 
     final String changeText = isEqual
         ? '= նույնը'
@@ -313,10 +318,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         categoryIcon(category)!,
                         width: 25,
                         height: 25,
-                        colorFilter: ColorFilter.mode(
-                          color,
-                          BlendMode.srcIn,
-                        ),
+                        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
                       ),
               ),
               SizedBox(width: 12),
@@ -358,9 +360,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   ),
                   SizedBox(height: 2),
                   Text(
-                    previousAmount == 0 && amount > 0
-                        ? '+100% ↑'
-                        : changeText,
+                    previousAmount == 0 && amount > 0 ? '+100% ↑' : changeText,
                     style: TextStyle(
                       fontSize: 12,
                       color: previousAmount == 0 && amount > 0
@@ -401,9 +401,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           padding: EdgeInsets.all(8),
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(
-                color: Color.fromARGB(255, 224, 223, 223),
-              ),
+              border: Border.all(color: Color.fromARGB(255, 224, 223, 223)),
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
@@ -457,10 +455,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   SizedBox(height: 20),
                   Text(
                     'Մանրամասն',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   SizedBox(height: 12),
                   if (activeCategoryList.isEmpty)
@@ -474,10 +469,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       child: Text(
                         'Այս ամսվա համար ծախսեր չկան',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 15,
-                        ),
+                        style: TextStyle(color: Colors.grey, fontSize: 15),
                       ),
                     )
                   else

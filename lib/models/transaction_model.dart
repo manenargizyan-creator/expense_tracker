@@ -1,6 +1,14 @@
 enum TransactionType { expense, income }
 
-enum TransactionCategory { food, transport, education, other }
+enum TransactionCategory {
+  food,
+  transport,
+  education,
+  other,
+  salary,
+  gift,
+  business,
+}
 
 class TransactionModel {
   final String id;
@@ -20,6 +28,7 @@ class TransactionModel {
   });
 
   bool get isExpense => type == TransactionType.expense;
+
   bool get isIncome => type == TransactionType.income;
 
   Map<String, dynamic> toJson() {

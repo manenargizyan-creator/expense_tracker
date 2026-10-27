@@ -131,7 +131,7 @@ class CategoryChart extends StatelessWidget {
   }
 
   Widget _legend(String title, Color color, double amount, double total) {
-    final double percent = amount / total * 100;
+    final double percent = total > 0 ? amount / total * 100 : 0;
 
     return Row(
       children: [
@@ -140,31 +140,25 @@ class CategoryChart extends StatelessWidget {
           height: 10,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
-
         const SizedBox(width: 7),
-
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Row(
-                children: [
-                  Text(
-                    title,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 12, color: Colors.black87),
-                  ),
-                  const SizedBox(height: 3),
-                  SizedBox(width: 10),
-                  Text(
-                    '${percent.toStringAsFixed(0)}%',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+              Expanded(
+                child: Text(
+                  title,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 12, color: Colors.black87),
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                '${percent.toStringAsFixed(0)}%',
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
             ],
           ),

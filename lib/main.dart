@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'screens/home_screen.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(const FinanceApp());
+import 'screens/home_screen.dart';
+import 'providers/transaction_provider.dart';
+
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => TransactionProvider(),
+      child: const FinanceApp(),
+    ),
+  );
+}
 
 class FinanceApp extends StatelessWidget {
   const FinanceApp({super.key});

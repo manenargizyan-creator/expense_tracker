@@ -14,19 +14,27 @@ class TransactionData {
     }
 
     final List<dynamic> decoded = jsonDecode(data);
+    final List<TransactionModel> transactions = [];
 
-    return decoded.map((item) {
-      return TransactionModel.fromJson(Map<String, dynamic>.from(item as Map));
-    }).toList();
+    for (final item in decoded) {
+      transactions.add(
+        TransactionModel.fromJson(Map<String, dynamic>.from(item as Map)),
+      );
+    }
+
+    return transactions;
   }
 
   static Future<void> saveTransactions(
     List<TransactionModel> transactions,
   ) async {
     final prefs = await SharedPreferences.getInstance();
+    final List<Map<String, dynamic>> data = [];
 
-    final data = jsonEncode(transactions.map((item) => item.toJson()).toList());
+    for (final transaction in transactions) {
+      data.add(transaction.toJson());
+    }
 
-    await prefs.setString(_storageKey, data);
+    await prefs.setString(_storageKey, jsonEncode(data));
   }
 }

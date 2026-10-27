@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import '../models/transaction_model.dart';
 
 class WeeklyChart extends StatelessWidget {
-  final List<double> expenses;
+  final List<TransactionModel> transactions;
 
-  const WeeklyChart({super.key, required this.expenses});
+  const WeeklyChart({super.key, required this.transactions});
 
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now();
+
     final dates = List.generate(
       7,
       (index) => DateTime(
@@ -18,10 +20,20 @@ class WeeklyChart extends StatelessWidget {
       ).subtract(Duration(days: 6 - index)),
     );
 
-    final values = List.generate(
-      7,
-      (index) => expenses.length > index ? expenses[index] : 0.0,
-    );
+    // Հաշվում ենք յուրաքանչյուր օրվա իրական ծախսերը։
+    final values = List.generate(7, (index) {
+      final date = dates[index];
+
+      return transactions
+          .where(
+            (transaction) =>
+                transaction.isExpense &&
+                transaction.date.year == date.year &&
+                transaction.date.month == date.month &&
+                transaction.date.day == date.day,
+          )
+          .fold<double>(0, (sum, transaction) => sum + transaction.amount);
+    });
 
     final average = values.fold<double>(0, (sum, value) => sum + value) / 7;
 
