@@ -128,8 +128,8 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Container(
-                    width: 35,
-                    height: 35,
+                    width: 40,
+                    height: 40,
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: const Color(0xFF255039),
