@@ -87,7 +87,9 @@ class HomeScreen extends StatelessWidget {
     final balance = provider.balance;
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF4F6F3),
       appBar: AppBar(
+        backgroundColor: const Color(0xFF1C4332),
         toolbarHeight: 210,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -110,7 +112,6 @@ class HomeScreen extends StatelessWidget {
                   provider.selectMonth(provider.selectedMonth, year);
                 },
               ),
-
               const SizedBox(height: 5),
               Row(
                 children: [
@@ -131,7 +132,7 @@ class HomeScreen extends StatelessWidget {
                     height: 35,
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.green,
+                      color: const Color(0xFF255039),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: SvgPicture.asset(
@@ -145,19 +146,19 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
               const Text(
-                'Մուտք − ծախս',
+                'Մնացորդ ամսվա վերջում',
                 style: TextStyle(
-                  color: Colors.lightGreen,
-                  fontSize: 12,
+                  color: Color(0xFF93C4AC),
+                  fontSize: 12.4,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 10),
               Row(
                 children: [
-                  _balanceCard('Մուտք', income, const Color(0xFF96B870)),
+                  _balanceCard('Մուտք', income, const Color(0xFF8FD6B0)),
                   const SizedBox(width: 12),
-                  _balanceCard('Ծախս', expenses, Colors.red),
+                  _balanceCard('Ծախս', expenses, const Color(0xFFF0A9A2)),
                 ],
               ),
             ],
@@ -180,19 +181,24 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   const Text(
                     'Գործարքներ',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.5,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => StatisticsScreen()),
+                        MaterialPageRoute(
+                          builder: (_) => const StatisticsScreen(),
+                        ),
                       );
                     },
                     child: const Text(
                       'Բոլորը',
                       style: TextStyle(
-                        color: Colors.green,
+                        color: Color(0xFF2E7D56),
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
@@ -213,7 +219,7 @@ class HomeScreen extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2E6D2F),
+                    backgroundColor: const Color(0xFF2E7D56),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
@@ -238,7 +244,9 @@ class HomeScreen extends StatelessWidget {
     List<TransactionModel> transactions,
   ) {
     if (provider.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+        child: CircularProgressIndicator(color: Color(0xFF1C4332)),
+      );
     }
 
     if (provider.error != null) {
@@ -268,13 +276,15 @@ class HomeScreen extends StatelessWidget {
         final category = transaction.category;
 
         final backgroundColor = transaction.isIncome
-            ? const Color(0xFFE1F3D8)
+            ? const Color(0xFFDCF1E4)
             : category == TransactionCategory.food
-            ? const Color(0xFFFFE5D9)
+            ? const Color(0xFFFDEDD6)
             : category == TransactionCategory.transport
-            ? const Color(0xFFDCEBFF)
+            ? const Color(0xFFE0EEFB)
             : category == TransactionCategory.education
             ? const Color(0xFFEDE0FF)
+            : category == TransactionCategory.entertainment
+            ? const Color(0xFFE0EEFB)
             : const Color(0xFFFFF0C2);
 
         Widget leadingIcon;
@@ -283,15 +293,27 @@ class HomeScreen extends StatelessWidget {
           leadingIcon = Icon(
             _incomeIcon(transaction.note),
             size: 25,
-            color: const Color(0xFF388E3C),
+            color: const Color(0xFF2F7650),
           );
         } else if (category == TransactionCategory.other) {
           leadingIcon = const Icon(
             Icons.add,
             size: 25,
-            color: Color(0xFFD6A020),
+            color: Color(0xFFA8790B),
+          );
+        } else if (category == TransactionCategory.entertainment) {
+          leadingIcon = const Icon(
+            Icons.movie_outlined,
+            size: 25,
+            color: Color(0xFF477DAE),
           );
         } else {
+          final iconColor = category == TransactionCategory.food
+              ? const Color(0xFFC4772D)
+              : category == TransactionCategory.transport
+              ? const Color(0xFF477DAE)
+              : const Color(0xFF8062A8);
+
           leadingIcon = SvgPicture.asset(
             category == TransactionCategory.food
                 ? 'assets/icons/shop_bag.svg'
@@ -300,6 +322,7 @@ class HomeScreen extends StatelessWidget {
                 : 'assets/icons/comp.svg',
             width: 25,
             height: 25,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         }
 
@@ -308,8 +331,6 @@ class HomeScreen extends StatelessWidget {
           direction: DismissDirection.endToStart,
           confirmDismiss: (_) async {
             await _confirmDelete(context, provider, transaction);
-
-            // Գործարքը հեռացնում է Provider-ը։
             return false;
           },
           background: Container(
@@ -327,6 +348,8 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           child: Card(
+            color: const Color(0xFFFFFFFF),
+            elevation: 0,
             child: ListTile(
               onTap: () {
                 _openEditScreen(context, transaction);
@@ -355,7 +378,9 @@ class HomeScreen extends StatelessWidget {
                 '${transaction.amount.toStringAsFixed(0)} ֏',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: transaction.isIncome ? Colors.green : Colors.red,
+                  color: transaction.isIncome
+                      ? const Color(0xFF1C4332)
+                      : Colors.red,
                 ),
               ),
             ),
@@ -387,16 +412,25 @@ class HomeScreen extends StatelessWidget {
     switch (category) {
       case TransactionCategory.food:
         return 'Սնունդ';
+
       case TransactionCategory.transport:
         return 'Տրանսպորտ';
+
       case TransactionCategory.education:
         return 'Ուսում';
+
       case TransactionCategory.salary:
         return 'Աշխատավարձ';
+
       case TransactionCategory.gift:
         return 'Նվեր';
+
       case TransactionCategory.business:
         return 'Բիզնես';
+
+      case TransactionCategory.entertainment:
+        return 'Զվարճանք';
+
       case TransactionCategory.other:
         return 'Այլ';
     }
@@ -408,13 +442,13 @@ class HomeScreen extends StatelessWidget {
         height: 70,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.15),
+          color: const Color(0xFF255039),
           borderRadius: BorderRadius.circular(14),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: TextStyle(color: titleColor, fontSize: 14)),
+            Text(title, style: TextStyle(color: titleColor, fontSize: 12.5)),
             const SizedBox(height: 5),
             Text(
               '${amount.toStringAsFixed(0)} ֏',

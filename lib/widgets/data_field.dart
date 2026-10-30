@@ -62,11 +62,11 @@ class _DateFieldState extends State<DateField> {
         prefixIcon: const Icon(Icons.calendar_month),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.grey),
+          borderSide: const BorderSide(color: Color(0xFFDCE4DC)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.grey, width: 2),
+          borderSide: const BorderSide(color: Color(0xFFDCE4DC), width: 2),
         ),
       ),
       style: const TextStyle(fontWeight: FontWeight.bold),

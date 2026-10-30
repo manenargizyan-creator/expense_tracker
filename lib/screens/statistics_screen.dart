@@ -14,7 +14,7 @@ class StatisticsScreen extends StatefulWidget {
 class _StatisticsScreenState extends State<StatisticsScreen> {
   int selectedMonth = 0;
 
-  final Color bgColor = Color.fromARGB(255, 243, 246, 241);
+  final Color bgColor = const Color.fromARGB(255, 243, 246, 241);
 
   List<TransactionModel> transactions = [];
   bool isLoading = true;
@@ -122,9 +122,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
   double get monthlyTotal {
     double total = 0;
+
     for (final category in TransactionCategory.values) {
       total += categoryTotal(category);
     }
+
     return total;
   }
 
@@ -140,7 +142,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           });
         },
         child: Container(
-          margin: EdgeInsets.all(3),
+          margin: const EdgeInsets.all(3),
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: isSelected ? Colors.white : Colors.transparent,
@@ -166,8 +168,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         return 'Սնունդ';
       case TransactionCategory.transport:
         return 'Տրանսպորտ';
+      case TransactionCategory.entertainment:
+        return 'Զվարճանք';
       case TransactionCategory.education:
-        return 'Կրթություն';
+        return 'Ուսում';
       case TransactionCategory.other:
         return 'Այլ';
       case TransactionCategory.salary:
@@ -187,6 +191,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         return 'assets/icons/bus.svg';
       case TransactionCategory.education:
         return 'assets/icons/comp.svg';
+      case TransactionCategory.entertainment:
       case TransactionCategory.other:
       case TransactionCategory.salary:
       case TransactionCategory.gift:
@@ -198,19 +203,21 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Color categoryColor(TransactionCategory category) {
     switch (category) {
       case TransactionCategory.food:
-        return Colors.green;
+        return const Color(0xFF2E7D56);
       case TransactionCategory.transport:
-        return Colors.yellow;
+        return const Color(0xFFE8B44A);
+      case TransactionCategory.entertainment:
+        return const Color(0xFF8FB6E8);
       case TransactionCategory.education:
-        return Colors.lightGreen;
+        return const Color(0xFF7FB89A);
       case TransactionCategory.other:
-        return Colors.deepPurpleAccent;
+        return const Color(0xFFC9A6E0);
       case TransactionCategory.business:
-        return Colors.lightGreen;
+        return const Color(0xFF8FB6E8);
       case TransactionCategory.salary:
-        return Colors.deepPurpleAccent;
+        return const Color(0xFF2E7D56);
       case TransactionCategory.gift:
-        return Colors.deepPurpleAccent;
+        return const Color(0xFFC9A6E0);
     }
   }
 
@@ -219,6 +226,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       TransactionCategory.food,
       displayedMonth,
     );
+
     final double dailyAverage = foodAmount > 0 ? foodAmount / 30 : 0;
 
     final formattedDaily = dailyAverage
@@ -230,32 +238,47 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.only(top: 10),
-      padding: EdgeInsets.all(16),
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Color(0xFF1E382B),
+        color: const Color(0xFF1C4332),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.1),
+              color: const Color(0xFFC6E3D4).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(Icons.trending_up, color: Color(0xFF4E9F74), size: 24),
+            child: const Icon(
+              Icons.trending_up,
+              color: Color(0xFFC6E3D4),
+              size: 24,
+            ),
           ),
-          SizedBox(width: 14),
+          const SizedBox(width: 14),
           Expanded(
-            child: Text(
-              'Սննդի ծախսը աճել է՝ օրական միջինը $formattedDaily ֏',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                height: 1.3,
+            child: RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  color: Color(0xFFC6E3D4),
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w500,
+                  height: 1.3,
+                ),
+                children: [
+                  const TextSpan(text: 'Սննդի ծախսը աճել է՝ օրական միջինը '),
+                  TextSpan(
+                    text: '$formattedDaily ֏։',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -293,9 +316,22 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         ? (amount / monthlyTotal).clamp(0.0, 1.0)
         : 0.0;
 
+    final double sharePercent = monthlyTotal > 0
+        ? (amount / monthlyTotal) * 100
+        : 0.0;
+
+    final iconPath = categoryIcon(category);
+
+    final formattedAmount = amount
+        .toStringAsFixed(0)
+        .replaceAllMapped(
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (Match m) => '${m[1]} ',
+        );
+
     return Container(
-      margin: EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -306,39 +342,67 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 36,
+                height: 36,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(11),
                 ),
-                child: category == TransactionCategory.other
-                    ? Icon(Icons.add, color: color, size: 25)
-                    : SvgPicture.asset(
-                        categoryIcon(category)!,
-                        width: 25,
-                        height: 25,
-                        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                child: iconPath != null
+                    ? SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: SvgPicture.asset(
+                          iconPath,
+                          width: 18,
+                          height: 18,
+                          fit: BoxFit.fill,
+                          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                        ),
+                      )
+                    : Icon(
+                        category == TransactionCategory.entertainment
+                            ? Icons.movie_outlined
+                            : Icons.category,
+                        color: color,
+                        size: 18,
                       ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      categoryTitle(category),
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            categoryTitle(category),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          '${sharePercent.toStringAsFixed(0)}%',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: color,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Text(
                       '$txCount գործարք',
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: const TextStyle(
+                        fontSize: 12.5,
                         color: Colors.grey,
                         fontWeight: FontWeight.w500,
                       ),
@@ -346,19 +410,19 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   ],
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]} ')} ֏',
-                    style: TextStyle(
-                      fontSize: 16,
+                    '$formattedAmount ֏',
+                    style: const TextStyle(
+                      fontSize: 15.5,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   Text(
                     previousAmount == 0 && amount > 0 ? '+100% ↑' : changeText,
                     style: TextStyle(
@@ -373,13 +437,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               ),
             ],
           ),
-          SizedBox(height: 14),
+          const SizedBox(height: 14),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 8,
-              backgroundColor: Color(0xFFE9EDE8),
+              backgroundColor: const Color(0xFFE9EDE8),
               valueColor: AlwaysStoppedAnimation<Color>(color),
             ),
           ),
@@ -398,15 +462,17 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         backgroundColor: bgColor,
         elevation: 0,
         leading: Padding(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Color.fromARGB(255, 224, 223, 223)),
+              border: Border.all(
+                color: const Color.fromARGB(255, 224, 223, 223),
+              ),
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
             child: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back_ios_new,
                 color: Colors.black,
                 size: 18,
@@ -415,19 +481,20 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             ),
           ),
         ),
-        title: Text(
+        title: const Text(
           'Կատեգորիաներ',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 21,
+            fontSize: 23,
+            fontFamily: 'MontserratArm',
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -435,7 +502,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     height: 50,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 216, 219, 221),
+                      color: const Color.fromARGB(255, 216, 219, 221),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Row(
@@ -445,28 +512,34 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   CategoryChart(
                     food: categoryTotal(TransactionCategory.food),
                     transport: categoryTotal(TransactionCategory.transport),
+                    entertainment: categoryTotal(
+                      TransactionCategory.entertainment,
+                    ),
                     study: categoryTotal(TransactionCategory.education),
                     other: categoryTotal(TransactionCategory.other),
                   ),
-                  SizedBox(height: 20),
-                  Text(
+                  const SizedBox(height: 20),
+                  const Text(
                     'Մանրամասն',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.5,
+                    ),
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   if (activeCategoryList.isEmpty)
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Այս ամսվա համար ծախսեր չկան',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.grey, fontSize: 15),

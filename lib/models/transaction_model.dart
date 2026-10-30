@@ -8,6 +8,7 @@ enum TransactionCategory {
   salary,
   gift,
   business,
+  entertainment,
 }
 
 class TransactionModel {

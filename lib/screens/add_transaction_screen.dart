@@ -42,6 +42,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       selectedCategory = switch (transaction.category) {
         TransactionCategory.food => 'Սնունդ',
         TransactionCategory.transport => 'Տրանսպորտ',
+        TransactionCategory.entertainment => 'Զվարճանք',
         TransactionCategory.education => 'Ուսում',
         TransactionCategory.salary => 'Աշխատավարձ',
         TransactionCategory.gift => 'Նվեր',
@@ -80,6 +81,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     final category = switch (selectedCategory) {
       'Սնունդ' => TransactionCategory.food,
       'Տրանսպորտ' => TransactionCategory.transport,
+      'Զվարճանք' => TransactionCategory.entertainment,
       'Ուսում' => TransactionCategory.education,
       'Աշխատավարձ' => TransactionCategory.salary,
       'Նվեր' => TransactionCategory.gift,
@@ -162,7 +164,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           isEditing ? 'Խմբագրել գործարքը' : 'Նոր գործարք',
           style: const TextStyle(
             color: Colors.black,
-            fontSize: 21,
+            fontSize: 23,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -247,53 +249,51 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             const Text(
               'ԿԱՏԵԳՈՐԻԱ',
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey,
+                color: Color(0xFF5E7569),
               ),
             ),
 
             const SizedBox(height: 10),
 
-            Row(
+            Wrap(
+              spacing: 8,
+              runSpacing: 12,
               children: [
-                _categoryItem(
-                  isExpense ? 'Սնունդ' : 'Աշխատավարձ',
-                  isExpense
-                      ? _expenseIcon('assets/icons/shop_bag.svg', 'Սնունդ')
-                      : _incomeIcon(Icons.payments, 'Աշխատավարձ'),
-                ),
-
-                const SizedBox(width: 8),
-
-                _categoryItem(
-                  isExpense ? 'Տրանսպորտ' : 'Նվեր',
-                  isExpense
-                      ? _expenseIcon('assets/icons/bus.svg', 'Տրանսպորտ')
-                      : _incomeIcon(Icons.card_giftcard, 'Նվեր'),
-                ),
-
-                const SizedBox(width: 8),
-
-                _categoryItem(
-                  isExpense ? 'Ուսում' : 'Բիզնես',
-                  isExpense
-                      ? _expenseIcon('assets/icons/comp.svg', 'Ուսում')
-                      : _incomeIcon(Icons.business, 'Բիզնես'),
-                ),
-
-                const SizedBox(width: 8),
-
-                _categoryItem(
-                  'Այլ',
-                  Icon(
-                    Icons.add,
-                    color: selectedCategory == 'Այլ'
-                        ? Colors.white
-                        : Colors.grey,
-                    size: 32,
+                if (isExpense) ...[
+                  _categoryItem(
+                    'Սնունդ',
+                    _expenseIcon('assets/icons/shop_bag.svg', 'Սնունդ'),
                   ),
-                ),
+                  _categoryItem(
+                    'Տրանսպորտ',
+                    _expenseIcon('assets/icons/bus.svg', 'Տրանսպորտ'),
+                  ),
+                  _categoryItem(
+                    'Ուսում',
+                    _expenseIcon('assets/icons/comp.svg', 'Ուսում'),
+                  ),
+                  _categoryItem(
+                    'Զվարճանք',
+                    _categoryIcon(Icons.movie_outlined, 'Զվարճանք'),
+                  ),
+                ] else ...[
+                  _categoryItem(
+                    'Աշխատավարձ',
+                    _incomeIcon(Icons.payments, 'Աշխատավարձ'),
+                  ),
+                  _categoryItem(
+                    'Նվեր',
+                    _incomeIcon(Icons.card_giftcard, 'Նվեր'),
+                  ),
+                  _categoryItem(
+                    'Բիզնես',
+                    _incomeIcon(Icons.business, 'Բիզնես'),
+                  ),
+                ],
+
+                _categoryItem('Այլ', _categoryIcon(Icons.add, 'Այլ')),
               ],
             ),
 
@@ -301,7 +301,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
             const Text(
               'ՆՇՈՒՄ',
-              style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 14,
+                color: Color(0xFF5E7569),
+                fontWeight: FontWeight.bold,
+              ),
             ),
 
             const SizedBox(height: 10),
@@ -312,11 +316,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 hintText: 'Գրիր նշում...',
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.grey),
+                  borderSide: const BorderSide(color: Color(0xFFDCE4DC)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.green, width: 2),
+                  borderSide: const BorderSide(
+                    color: Color(0xFFDCE4DC),
+                    width: 2,
+                  ),
                 ),
               ),
             ),
@@ -339,7 +346,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               child: ElevatedButton(
                 onPressed: isSaving ? null : saveTransaction,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2E6D2F),
+                  backgroundColor: const Color(0xFF2E7D56),
                   foregroundColor: Colors.white,
                   disabledBackgroundColor: Colors.grey,
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -359,7 +366,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     : Text(
                         isEditing ? 'Պահպանել փոփոխությունները' : 'Պահպանել',
                         style: const TextStyle(
-                          fontSize: 17,
+                          fontSize: 16.5,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -374,8 +381,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   Widget _expenseIcon(String asset, String title) {
     return SvgPicture.asset(
       asset,
-      width: 32,
-      height: 32,
+      width: 22,
+      height: 22,
       colorFilter: ColorFilter.mode(
         selectedCategory == title ? Colors.white : Colors.grey,
         BlendMode.srcIn,
@@ -387,7 +394,15 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     return Icon(
       icon,
       color: selectedCategory == title ? Colors.white : Colors.grey,
-      size: 32,
+      size: 22,
+    );
+  }
+
+  Widget _categoryIcon(IconData icon, String title) {
+    return Icon(
+      icon,
+      color: selectedCategory == title ? Colors.white : Colors.grey,
+      size: 22,
     );
   }
 
@@ -428,30 +443,33 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   Widget _categoryItem(String title, Widget icon) {
     final selected = selectedCategory == title;
 
-    return Expanded(
+    return SizedBox(
+      width: 65,
       child: Column(
         children: [
           InkWell(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(16),
             onTap: () {
               setState(() {
                 selectedCategory = title;
               });
             },
             child: Container(
-              height: 60,
-              width: double.infinity,
+              height: 65,
+              width: 65,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: selected ? Colors.green : Colors.white,
-                borderRadius: BorderRadius.circular(15),
+                color: selected ? const Color(0xFF2E7D56) : Colors.white,
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: selected ? Colors.green : Colors.grey.shade300,
+                  color: selected
+                      ? const Color(0xFF2E7D56)
+                      : Colors.grey.shade300,
                 ),
               ),
               child: SizedBox(
-                width: 32,
-                height: 32,
+                width: 22,
+                height: 22,
                 child: Center(child: icon),
               ),
             ),
@@ -464,6 +482,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               color: selected ? Colors.black : Colors.grey,
             ),
             textAlign: TextAlign.center,
+            maxLines: 2,
           ),
         ],
       ),

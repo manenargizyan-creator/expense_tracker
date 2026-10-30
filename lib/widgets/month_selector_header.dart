@@ -172,8 +172,8 @@ class _MonthSelectorHeaderState extends State<MonthSelectorHeader> {
               Text(
                 months[widget.selectedMonth - 1],
                 style: const TextStyle(
-                  color: Colors.lightGreen,
-                  fontSize: 16,
+                  color: Color(0xFF93C4AC),
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,
                 ),
@@ -191,7 +191,7 @@ class _MonthSelectorHeaderState extends State<MonthSelectorHeader> {
               Text(
                 widget.selectedYear.toString(),
                 style: const TextStyle(
-                  color: Colors.lightGreen,
+                  color: Color(0xFF93C4AC),
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
