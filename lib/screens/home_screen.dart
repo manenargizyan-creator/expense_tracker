@@ -90,7 +90,7 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF4F6F3),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1C4332),
-        toolbarHeight: 210,
+        toolbarHeight: 250,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(30),
@@ -121,12 +121,12 @@ class HomeScreen extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 26,
+                        fontSize: 34,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 10),
                   Container(
                     width: 35,
                     height: 35,
@@ -153,7 +153,7 @@ class HomeScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 25),
               Row(
                 children: [
                   _balanceCard('Մուտք', income, const Color(0xFF8FD6B0)),
