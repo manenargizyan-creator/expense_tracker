@@ -6,50 +6,84 @@ class StatisticsService {
   }
 
   double calculateTotalExpenses(List<TransactionModel> transactions) {
-    return getExpenses(
-      transactions,
-    ).fold<double>(0, (sum, transaction) => sum + transaction.amount);
+    return getExpenses(transactions).fold<double>(
+      0,
+      (sum, transaction) => sum + transaction.amount,
+    );
   }
 
-  // Ծախսերը՝ ըստ կատեգորիաների
-  Map<TransactionCategory, double> calculateCategoryTotals(
+  List<TransactionCategory> getCategories(
     List<TransactionModel> transactions,
   ) {
-    final totals = <TransactionCategory, double>{};
+    final categories = <TransactionCategory>[];
 
     for (final transaction in getExpenses(transactions)) {
-      totals[transaction.category] =
-          (totals[transaction.category] ?? 0) + transaction.amount;
+      if (!categories.contains(transaction.category)) {
+        categories.add(transaction.category);
+      }
+    }
+
+    return categories;
+  }
+
+  List<double> calculateCategoryTotals(
+    List<TransactionModel> transactions,
+  ) {
+    final categories = getCategories(transactions);
+    final totals = <double>[];
+
+    for (final category in categories) {
+      double total = 0;
+
+      for (final transaction in getExpenses(transactions)) {
+        if (transaction.category == category) {
+          total += transaction.amount;
+        }
+      }
+
+      totals.add(total);
     }
 
     return totals;
   }
 
-  Map<TransactionCategory, int> calculateCategoryCounts(
+  List<int> calculateCategoryCounts(
     List<TransactionModel> transactions,
   ) {
-    final counts = <TransactionCategory, int>{};
+    final categories = getCategories(transactions);
+    final counts = <int>[];
 
-    for (final transaction in getExpenses(transactions)) {
-      counts[transaction.category] = (counts[transaction.category] ?? 0) + 1;
+    for (final category in categories) {
+      int count = 0;
+
+      for (final transaction in getExpenses(transactions)) {
+        if (transaction.category == category) {
+          count++;
+        }
+      }
+
+      counts.add(count);
     }
 
     return counts;
   }
 
-  Map<TransactionCategory, double> calculateCategoryPercentages(
+  List<double> calculateCategoryPercentages(
     List<TransactionModel> transactions,
   ) {
     final totals = calculateCategoryTotals(transactions);
     final total = calculateTotalExpenses(transactions);
+    final percentages = <double>[];
 
     if (total == 0) {
-      return {};
+      return percentages;
     }
 
-    return totals.map((category, amount) {
-      return MapEntry(category, amount / total * 100);
-    });
+    for (final amount in totals) {
+      percentages.add(amount / total * 100);
+    }
+
+    return percentages;
   }
 
   List<TransactionModel> getLastSevenDaysExpenses(
@@ -57,7 +91,7 @@ class StatisticsService {
   ) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final firstDay = today.subtract(const Duration(days: 6));
+    final firstDay = today.subtract(Duration(days: 6));
 
     return getExpenses(transactions).where((transaction) {
       final date = DateTime(
@@ -70,38 +104,42 @@ class StatisticsService {
     }).toList();
   }
 
-  Map<DateTime, double> calculateDailyExpenses(
+  List<double> calculateDailyExpenses(
     List<TransactionModel> transactions,
   ) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final result = <DateTime, double>{};
+    final dailyExpenses = <double>[];
 
     for (int i = 6; i >= 0; i--) {
       final date = today.subtract(Duration(days: i));
-      result[date] = 0;
+      double total = 0;
+
+      for (final transaction in getLastSevenDaysExpenses(transactions)) {
+        final transactionDate = DateTime(
+          transaction.date.year,
+          transaction.date.month,
+          transaction.date.day,
+        );
+
+        if (transactionDate == date) {
+          total += transaction.amount;
+        }
+      }
+
+      dailyExpenses.add(total);
     }
 
-    for (final transaction in getLastSevenDaysExpenses(transactions)) {
-      final date = DateTime(
-        transaction.date.year,
-        transaction.date.month,
-        transaction.date.day,
-      );
-
-      result[date] = (result[date] ?? 0) + transaction.amount;
-    }
-
-    return result;
+    return dailyExpenses;
   }
 
   double calculateDailyAverage(List<TransactionModel> transactions) {
     final dailyExpenses = calculateDailyExpenses(transactions);
+    double total = 0;
 
-    final total = dailyExpenses.values.fold<double>(
-      0,
-      (sum, amount) => sum + amount,
-    );
+    for (final amount in dailyExpenses) {
+      total += amount;
+    }
 
     return total / 7;
   }
@@ -109,14 +147,21 @@ class StatisticsService {
   TransactionCategory? getTopSpendingCategory(
     List<TransactionModel> transactions,
   ) {
+    final categories = getCategories(transactions);
     final totals = calculateCategoryTotals(transactions);
 
-    if (totals.isEmpty) {
+    if (categories.isEmpty) {
       return null;
     }
 
-    return totals.entries.reduce((a, b) {
-      return a.value >= b.value ? a : b;
-    }).key;
+    int topIndex = 0;
+
+    for (int i = 1; i < totals.length; i++) {
+      if (totals[i] > totals[topIndex]) {
+        topIndex = i;
+      }
+    }
+
+    return categories[topIndex];
   }
 }
