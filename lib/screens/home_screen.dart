@@ -380,7 +380,7 @@ class HomeScreen extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: transaction.isIncome
-                      ? const Color(0xFF1C4332)
+                      ? const Color(0xFF1F7A4C)
                       : const Color(0xFFB3382F),
                 ),
               ),
