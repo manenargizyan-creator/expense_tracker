@@ -377,6 +377,7 @@ class HomeScreen extends StatelessWidget {
                 '${transaction.isIncome ? '+' : '-'}'
                 '${transaction.amount.toStringAsFixed(0)} ֏',
                 style: TextStyle(
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: transaction.isIncome
                       ? const Color(0xFF1C4332)
