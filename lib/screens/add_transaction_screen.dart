@@ -256,45 +256,47 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             ),
 
             const SizedBox(height: 10),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 12,
+                children: [
+                  if (isExpense) ...[
+                    _categoryItem(
+                      'Սնունդ',
+                      _expenseIcon('assets/icons/shop_bag.svg', 'Սնունդ'),
+                    ),
+                    _categoryItem(
+                      'Տրանսպորտ',
+                      _expenseIcon('assets/icons/bus.svg', 'Տրանսպորտ'),
+                    ),
+                    _categoryItem(
+                      'Ուսում',
+                      _expenseIcon('assets/icons/comp.svg', 'Ուսում'),
+                    ),
+                    _categoryItem(
+                      'Զվարճանք',
+                      _categoryIcon(Icons.movie_outlined, 'Զվարճանք'),
+                    ),
+                  ] else ...[
+                    _categoryItem(
+                      'Աշխատավարձ',
+                      _incomeIcon(Icons.payments, 'Աշխատավարձ'),
+                    ),
+                    _categoryItem(
+                      'Նվեր',
+                      _incomeIcon(Icons.card_giftcard, 'Նվեր'),
+                    ),
+                    _categoryItem(
+                      'Բիզնես',
+                      _incomeIcon(Icons.business, 'Բիզնես'),
+                    ),
+                  ],
 
-            Wrap(
-              spacing: 8,
-              runSpacing: 12,
-              children: [
-                if (isExpense) ...[
-                  _categoryItem(
-                    'Սնունդ',
-                    _expenseIcon('assets/icons/shop_bag.svg', 'Սնունդ'),
-                  ),
-                  _categoryItem(
-                    'Տրանսպորտ',
-                    _expenseIcon('assets/icons/bus.svg', 'Տրանսպորտ'),
-                  ),
-                  _categoryItem(
-                    'Ուսում',
-                    _expenseIcon('assets/icons/comp.svg', 'Ուսում'),
-                  ),
-                  _categoryItem(
-                    'Զվարճանք',
-                    _categoryIcon(Icons.movie_outlined, 'Զվարճանք'),
-                  ),
-                ] else ...[
-                  _categoryItem(
-                    'Աշխատավարձ',
-                    _incomeIcon(Icons.payments, 'Աշխատավարձ'),
-                  ),
-                  _categoryItem(
-                    'Նվեր',
-                    _incomeIcon(Icons.card_giftcard, 'Նվեր'),
-                  ),
-                  _categoryItem(
-                    'Բիզնես',
-                    _incomeIcon(Icons.business, 'Բիզնես'),
-                  ),
+                  _categoryItem('Այլ', _categoryIcon(Icons.add, 'Այլ')),
                 ],
-
-                _categoryItem('Այլ', _categoryIcon(Icons.add, 'Այլ')),
-              ],
+              ),
             ),
 
             const SizedBox(height: 15),
