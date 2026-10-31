@@ -137,6 +137,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                     child: SvgPicture.asset(
                       'assets/icons/icon1.svg',
+                      width: 18,
+                      height: 18,
                       colorFilter: const ColorFilter.mode(
                         Colors.white,
                         BlendMode.srcIn,

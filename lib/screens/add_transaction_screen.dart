@@ -209,35 +209,45 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  SizedBox(
-                    width: 180,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: amountController,
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
-                            textAlign: TextAlign.center,
-                            decoration: const InputDecoration(
-                              hintText: '0',
-                              border: UnderlineInputBorder(),
-                            ),
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+
+                  // Գումարի մուտքագրման դաշտ
+                  Padding(
+                    padding: const EdgeInsets.only(top: 18),
+                    child: SizedBox(
+                      width: 135,
+                      height: 65,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: amountController,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              textAlign: TextAlign.center,
+                              decoration: const InputDecoration(
+                                hintText: '0',
+                                border: UnderlineInputBorder(),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xFF2E7D56),
+                                  ),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xFF2E7D56),
+                                  ),
+                                ),
+                              ),
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                        const Text(
-                          ' ֏',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -256,6 +266,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             ),
 
             const SizedBox(height: 10),
+
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Wrap(
