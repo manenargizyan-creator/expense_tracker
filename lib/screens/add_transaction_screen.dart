@@ -162,7 +162,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         ),
         title: Text(
           isEditing ? 'Խմբագրել գործարքը' : 'Նոր գործարք',
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.black,
             fontSize: 23,
             fontWeight: FontWeight.bold,
@@ -170,7 +170,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -178,7 +178,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               height: 50,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 216, 219, 221),
+                color: Color.fromARGB(255, 216, 219, 221),
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Row(
@@ -200,8 +200,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               ),
               child: Column(
                 children: [
-                  const SizedBox(height: 20),
-                  const Text(
+                  SizedBox(height: 20),
+                  Text(
                     'ԳՈՒՄԱՐ',
                     style: TextStyle(
                       color: Colors.grey,
@@ -351,9 +351,32 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 });
               },
             ),
-
-            const SizedBox(height: 20),
-
+            SizedBox(height: 15),
+            Container(
+              width: double.infinity,
+              height: 52,
+              decoration: BoxDecoration(
+                color: Color(0xFFF0C9C5),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Icon(Icons.error_outline, color: Color(0xFFB3382F,)),
+                    SizedBox(width: 2,),
+                    Text(
+                      'Վալիդացիայի օրինակ՝ «Գումարը պետք է 0- \n ից մեծ թիվ լինի»',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Color(0xFF7E251E)
+                      ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 20,),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -368,7 +391,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   ),
                 ),
                 child: isSaving
-                    ? const SizedBox(
+                    ? SizedBox(
                         height: 22,
                         width: 22,
                         child: CircularProgressIndicator(
